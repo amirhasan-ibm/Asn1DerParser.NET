@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F18F1812-FD65-4206-8869-B1DBB4D59AC8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SysadminsLV.Asn1Parser</RootNamespace>
+    <AssemblyName>SysadminsLV.Asn1Parser</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Tree\IAsn1Tree.cs" />
+    <Compile Include="CLRExtensions\Generics\ObservableList.cs" />
+    <Compile Include="Asn1Reader.cs" />
+    <Compile Include="Asn1Class.cs" />
+    <Compile Include="Asn1Type.cs" />
+    <Compile Include="Asn1Utils.cs" />
+    <Compile Include="AsnFormatter.cs" />
+    <Compile Include="Asn1InvalidTagException.cs" />
+    <Compile Include="CLRExtensions\BigInteger2.cs" />
+    <Compile Include="EncodingFormat.cs" />
+    <Compile Include="EncodingType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tree\Asn1Tree.cs" />
+    <Compile Include="Tree\Asn1Node.cs" />
+    <Compile Include="Tree\GenericAsn1Tree.cs" />
+    <Compile Include="Tree\IAsn1NodeValue.cs" />
+    <Compile Include="Tree\InsertNodeOption.cs" />
+    <Compile Include="Universal\Asn1BitString.cs" />
+    <Compile Include="Universal\Asn1BmpString.cs" />
+    <Compile Include="Universal\Asn1GeneralizedTime.cs" />
+    <Compile Include="Universal\Asn1IA5String.cs" />
+    <Compile Include="Universal\Asn1Integer.cs" />
+    <Compile Include="Universal\Asn1NumericString.cs" />
+    <Compile Include="Universal\Asn1ObjectIdentifier.cs" />
+    <Compile Include="Universal\Asn1PrintableString.cs" />
+    <Compile Include="Universal\Asn1TeletexString.cs" />
+    <Compile Include="Universal\Asn1UniversalString.cs" />
+    <Compile Include="Universal\Asn1UtcTime.cs" />
+    <Compile Include="Universal\Asn1UTF8String.cs" />
+    <Compile Include="Universal\Asn1VisibleString.cs" />
+    <Compile Include="Universal\UniversalTagBase.cs" />
+    <Compile Include="Utils\AsnInternalMap.cs" />
+    <Compile Include="Utils\DateTimeUtils.cs" />
+    <Compile Include="Utils\Strings.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
