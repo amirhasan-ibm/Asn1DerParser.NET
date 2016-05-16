@@ -16,11 +16,8 @@ namespace SysadminsLV.Asn1Parser {
 		const String crlFooter = "-----END X509 CRL-----";
 		const String reqHeader = "-----BEGIN NEW CERTIFICATE REQUEST-----";
 		const String reqFooter = "-----END NEW CERTIFICATE REQUEST-----";
-		static readonly Char[] _whitespace = { ' ', '\t', '\r', '\n' };
-		static readonly Char[] _whitespaceLimited = { ' ', '\t', '\r' };
 		static readonly Char[] _delimiters = { ' ', '-', ':', '\t', '\n', '\r' };
-		static readonly Char[] _hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f' };
-
+		
 		/// <summary>
 		/// Gets or sets the value that indicates where hex octets are encoded in upper case (e.g. 'EF', instead of 'ef').
 		/// </summary>
@@ -178,7 +175,7 @@ namespace SysadminsLV.Asn1Parser {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			for (Int32 i = start; i < start + count; i++) {
-				SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[i]);
+				byteToHexOctet(SB, rawData[i]);
 			}
 			return SB.ToString();
 		}
@@ -187,15 +184,15 @@ namespace SysadminsLV.Asn1Parser {
 			StringBuilder SB = new StringBuilder();
 			if (format == EncodingFormat.NOCRLF) {
 				for (Int32 i = start; i < start + count; i++) {
-					SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[i]);
-				}
+                    byteToHexOctet(SB, rawData[i]);
+                }
 				return SB.Remove(SB.Length - 1, 1).ToString();
 			}
 			Int32 n = 0;
 			for (Int32 index = start; index < start + count; index++) {
 				n++;
-				SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[index]);
-				if (index == start) {
+                byteToHexOctet(SB, rawData[index]);
+                if (index == start) {
 					SB.Append(" ");
 					continue;
 				}
@@ -221,9 +218,10 @@ namespace SysadminsLV.Asn1Parser {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			Int32 rowCount = 0, n = 0;
-			for (Int32 index = start; index < start + count; index++) {
+            Int32 addrLength = getAddrLength(rawData.Length);
+            for (Int32 index = start; index < start + count; index++) {
 				if (n % 16 == 0) {
-					String addr = Convert.ToString(rowCount, 16).PadLeft(getAddrLength(rawData.Length), '0');
+					String addr = Convert.ToString(rowCount, 16).PadLeft(addrLength, '0');
 					if (ForceHexUpperCase) {
 						addr = addr.ToUpper();
 					}
@@ -231,8 +229,8 @@ namespace SysadminsLV.Asn1Parser {
 					SB.Append("    ");
 					rowCount += 16;
 				}
-				SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[index]);
-				if (index == start) {
+                byteToHexOctet(SB, rawData[index]);
+                if (index == start) {
 					SB.Append(" ");
 					n++;
 					continue;
@@ -263,18 +261,19 @@ namespace SysadminsLV.Asn1Parser {
 			Int32 n = 0;
 			for (Int32 index = 0; index < start + count; index++) {
 				n++;
-				SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[index]);
-				Char c = rawData[index] < 32 || rawData[index] > 126
+                byteToHexOctet(SB, rawData[index]);
+                Char c = rawData[index] < 32 || rawData[index] > 126
 						? '.'
-						: ((Char)rawData[index]);
+						: (Char)rawData[index];
 				ascii.Append(c);
 				if (index == start) {
 					SB.Append(" ");
 					continue;
 				}
 				if (n % 16 == 0) {
-					SB.AppendFormat("   {0}", ascii);
-					ascii.Clear();
+                    SB.Append("   ");
+                    SB.Append(ascii);
+                    ascii.Clear();
 					SB.Append(format == EncodingFormat.NOCR ? "\n" : "\r\n");
 				} else if (n % 8 == 0) {
 					SB.Append("  ");
@@ -307,10 +306,11 @@ namespace SysadminsLV.Asn1Parser {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			StringBuilder ascii = new StringBuilder(8);
-			Int32 rowCount = 0, n = 0;
+            Int32 addrLength = getAddrLength(rawData.Length);
+            Int32 rowCount = 0, n = 0;
 			for (Int32 index = 0; index < start + count; index++) {
 				if (n % 16 == 0) {
-					String addr = Convert.ToString(rowCount, 16).PadLeft(getAddrLength(rawData.Length), '0');
+					String addr = Convert.ToString(rowCount, 16).PadLeft(addrLength, '0');
 					if (ForceHexUpperCase) {
 						addr = addr.ToUpper();
 					}
@@ -318,10 +318,10 @@ namespace SysadminsLV.Asn1Parser {
 					SB.Append("    ");
 					rowCount += 16;
 				}
-				SB.AppendFormat(ForceHexUpperCase ? "{0:X2}" : "{0:x2}", rawData[index]);
-				Char c = rawData[index] < 32 || rawData[index] > 126
+                byteToHexOctet(SB, rawData[index]);
+                Char c = rawData[index] < 32 || rawData[index] > 126
 						? '.'
-						: ((Char)rawData[index]);
+						: (Char)rawData[index];
 				ascii.Append(c);
 				if (index == 0) {
 					SB.Append(" ");
@@ -329,7 +329,8 @@ namespace SysadminsLV.Asn1Parser {
 					continue;
 				}
 				if ((n + 1) % 16 == 0) {
-					SB.AppendFormat("   {0}", ascii);
+					SB.Append("   ");
+                    SB.Append(ascii);
 					ascii.Clear();
 					SB.Append(format == EncodingFormat.NOCR ? "\n" : "\r\n");
 				} else if ((n + 1) % 8 == 0) {
@@ -474,15 +475,15 @@ namespace SysadminsLV.Asn1Parser {
 		 * 2) each octet is separated by one or more delimiter chars
 		 */
 		static Byte[] fromHex(String input) {
-			List<Byte> bytes = new List<Byte>();
-			for (Int32 index = 0; index < input.Length; index++) {
-				if (testHexChar(input[index])) {
-					if (index + 1 == input.Length || !testHexChar(input[index + 1])) {
+			List<Byte> bytes = new List<Byte>(input.Length / 2);
+			for (Int32 i = 0; i < input.Length; i++) {
+				if (testHexChar(input[i])) {
+					if (i + 1 == input.Length || !testHexChar(input[i + 1])) {
 						return null;
 					}
-					bytes.Add(Convert.ToByte(input[index].ToString(CultureInfo.InvariantCulture) + input[index + 1], 16));
-					index++;
-				} else if (!testHexSpace(input[index])) {
+                    bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
+                    i++;
+				} else if (!testDelimiter(input[i])) {
 					return null;
 				}
 			}
@@ -498,11 +499,11 @@ namespace SysadminsLV.Asn1Parser {
 		static Byte[] fromHexAddr(String input) {
 			Byte octetCount = 0;
 			Boolean addressReached = false;
-			List<Byte> bytes = new List<Byte>();
+			List<Byte> bytes = new List<Byte>(input.Length / 3);
 			for (Int32 i = 0; i < input.Length; i++) {
 				if (octetCount == 0 && !addressReached) {
 					// attempt to resolve if address octet is reached
-					if (_hexChars.Contains(input[i])) {
+					if (testHexChar(input[i])) {
 						Int32 remaining = input.Length - i - 1;
 						Boolean eof = false;
 						if (remaining >= 8) {
@@ -524,7 +525,7 @@ namespace SysadminsLV.Asn1Parser {
 							}
 							for (Int32 n = i; n < addrEndIndex; n++) {
 								// invalidate string if address field do not contain valid hex char
-								if (!_hexChars.Contains(input[n])) {
+								if (!testHexChar(input[n])) {
 									return null;
 								}
 							}
@@ -532,7 +533,7 @@ namespace SysadminsLV.Asn1Parser {
 							i = addrEndIndex;
 							addressReached = true;
 						}
-					} else if (!_whitespaceLimited.Contains(input[i])) {
+					} else if (!testWhitespaceLimited(input[i])) {
 						// invalidate the string if address field do not contain hex or limited whitespace char
 						return null;
 					}
@@ -541,19 +542,19 @@ namespace SysadminsLV.Asn1Parser {
 					if (input[i] == '\n') {
 						octetCount = 0;
 						addressReached = false;
-					} else if (!_whitespaceLimited.Contains(input[i])) {
+					} else if (!testWhitespaceLimited(input[i])) {
 						return null;
 					}
 				} else {
-					if (_hexChars.Contains(input[i]) && i + 1 < input.Length && _hexChars.Contains(input[i + 1])) {
-						bytes.Add(Convert.ToByte(input[i].ToString(CultureInfo.InvariantCulture) + input[i + 1], 16));
-						// octet pair must be followed by delimiter.
-						if (i + 2 < input.Length) {
-							if (!_delimiters.Contains(input[i + 2])) { return null; }
+					if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
+                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
+                        // octet pair must be followed by delimiter.
+                        if (i + 2 < input.Length) {
+							if (!testDelimiter(input[i + 2])) { return null; }
 						}
 						octetCount++;
 						i++;
-					} else if (!_delimiters.Contains(input[i])) {
+					} else if (!testDelimiter(input[i])) {
 						return null;
 					}
 				}
@@ -576,7 +577,7 @@ namespace SysadminsLV.Asn1Parser {
 			Byte octetCount = 0;
 			Boolean asciiReached = false;
 			String ascii = String.Empty;
-			List<Byte> bytes = new List<Byte>();
+			List<Byte> bytes = new List<Byte>(input.Length / 3);
 			for (Int32 i = 0; i < input.Length; i++) {
 				// do not allow more hex octets after full line. Treat them as ascii characters.
 				if (octetCount == 16) {
@@ -592,11 +593,11 @@ namespace SysadminsLV.Asn1Parser {
 							asciiReached = false;
 							ascii = String.Empty;
 							octetCount = 0;
-						} else if (!_whitespace.Contains(input[i])) {
+						} else if (!testWhitespace(input[i])) {
 							return null;
 						}
 					} else {
-						if (!_whitespace.Contains(input[i])) {
+						if (!testWhitespace(input[i])) {
 							ascii += input[i];
 							asciiReached = true;
 						}
@@ -609,25 +610,25 @@ namespace SysadminsLV.Asn1Parser {
 							if (ascii.TrimEnd(_delimiters).Length > octetCount) {
 								return null;
 							}
-						} else if (!_whitespace.Contains(input[i])) {
+						} else if (!testWhitespace(input[i])) {
 							// rule 9
 							return null;
 						}
-					} else if (_hexChars.Contains(input[i]) && i + 1 < input.Length && _hexChars.Contains(input[i + 1])) {
-						bytes.Add(Convert.ToByte(input[i].ToString(CultureInfo.InvariantCulture) + input[i + 1], 16));
-						octetCount++;
+					} else if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
+                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
+                        octetCount++;
 						i++;
 						if (i + 1 < input.Length) {
 							// rule 5
-							if (octetCount < 3 && _hexChars.Contains(input[i + 1])) {
+							if (octetCount < 3 && testHexChar(input[i + 1])) {
 								return null;
 							}
 							// rule 6
-							if (!_delimiters.Contains(input[i + 1])) {
+							if (!testDelimiter(input[i + 1])) {
 								asciiReached = true;
 							}
 						}
-					} else if (!_delimiters.Contains(input[i])) {
+					} else if (!testDelimiter(input[i])) {
 						asciiReached = true;
 					}
 				}
@@ -641,11 +642,11 @@ namespace SysadminsLV.Asn1Parser {
 			Byte octetCount = 0;
 			Boolean addressReached = false, asciiReached = false;
 			String ascii = String.Empty;
-			List<Byte> bytes = new List<Byte>();
+			List<Byte> bytes = new List<Byte>(input.Length / 3);
 			for (Int32 i = 0; i < input.Length; i++) {
 				if (octetCount == 0 && !addressReached) {
 					// attempt to resolve if address octet is reached
-					if (_hexChars.Contains(input[i])) {
+					if (testHexChar(input[i])) {
 						Int32 remaining = input.Length - i - 1;
 						Boolean eof = false;
 						if (remaining >= 8) {
@@ -667,7 +668,7 @@ namespace SysadminsLV.Asn1Parser {
 							}
 							for (Int32 n = i; n < addrEndIndex; n++) {
 								// invalidate string if address field do not contain valid hex char
-								if (!_hexChars.Contains(input[n])) {
+								if (!testHexChar(input[n])) {
 									return null;
 								}
 							}
@@ -675,7 +676,7 @@ namespace SysadminsLV.Asn1Parser {
 							i = addrEndIndex;
 							addressReached = true;
 						}
-					} else if (!_whitespaceLimited.Contains(input[i])) {
+					} else if (!testWhitespaceLimited(input[i])) {
 						// invalidate the string if address field do not contain hex or limited whitespace char
 						return null;
 					}
@@ -690,11 +691,11 @@ namespace SysadminsLV.Asn1Parser {
 							addressReached = false;
 							ascii = String.Empty;
 							octetCount = 0;
-						} else if (!_whitespace.Contains(input[i])) {
+						} else if (!testWhitespace(input[i])) {
 							return null;
 						}
 					} else {
-						if (!_whitespace.Contains(input[i])) {
+						if (!testWhitespace(input[i])) {
 							ascii += input[i];
 							asciiReached = true;
 						}
@@ -705,25 +706,25 @@ namespace SysadminsLV.Asn1Parser {
 							ascii += input[i];
 							// rule 10
 							if (ascii.TrimEnd(_delimiters).Length > octetCount) { return null; }
-						} else if (!_whitespace.Contains(input[i])) {
+						} else if (!testWhitespace(input[i])) {
 							// rule 9
 							return null;
 						}
-					} else if (_hexChars.Contains(input[i]) && i + 1 < input.Length && _hexChars.Contains(input[i + 1])) {
-						bytes.Add(Convert.ToByte(input[i].ToString(CultureInfo.InvariantCulture) + input[i + 1], 16));
-						octetCount++;
+					} else if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
+                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
+                        octetCount++;
 						i++;
 						if (i + 1 < input.Length) {
 							// rule 5
-							if (octetCount < 3 && _hexChars.Contains(input[i + 1])) {
+							if (octetCount < 3 && testHexChar(input[i + 1])) {
 								return null;
 							}
 							// rule 6
-							if (!_delimiters.Contains(input[i + 1])) {
+							if (!testDelimiter(input[i + 1])) {
 								asciiReached = true;
 							}
 						}
-					} else if (!_delimiters.Contains(input[i])) {
+					} else if (!testDelimiter(input[i])) {
 						asciiReached = true;
 					}
 				}
@@ -753,20 +754,45 @@ namespace SysadminsLV.Asn1Parser {
 				? 4
 				: (h.Length % 2 == 0 ? h.Length : h.Length + 1);
 		}
+        static void byteToHexOctet(StringBuilder sb, Byte b) {
+            sb.Append(byteToHexChar((b >> 4) & 15));
+            sb.Append(byteToHexChar(b & 15));
+        }
+        static Char byteToHexChar(Int32 b) {
+            return b < 10
+                ? (Char)(b + 48)
+                : (ForceHexUpperCase ? (Char)(b + 55) : (Char)(b + 87));
+        }
+        static Boolean testWhitespace(Char c) {
+            return c == ' '  ||
+                   c == '\t' ||
+                   c == '\r' ||
+                   c == '\n';
+        }
+        static Boolean testWhitespaceLimited(Char c) {
+            return c == ' '  ||
+                   c == '\t' ||
+                   c == '\r';
+        }
+        static Boolean testDelimiter(Char c) {
+            return c == ' '  ||
+                   c == '-'  ||
+                   c == ':'  ||
+                   c == '\t' ||
+                   c == '\n' ||
+                   c == '\r';
+        }
 		static Boolean testHexChar(Char c) {
-			return _hexChars.Contains(c);
-			//return ((c >= '0' && c <= '9') ||
-			//	(c >= 'a' && c <= 'f') ||
-			//	(c >= 'A' && c <= 'F'));
-		}
-		static Boolean testHexSpace(Char c) {
-			return _delimiters.Contains(c);
-		}
+            // valid chars: 0-9, A-F, a-f
+            return (c >= '0' && c <= '9') ||
+                   (c >= 'a' && c <= 'f') ||
+                   (c >= 'A' && c <= 'F');
+        }
 		static Int32 getCount(Int32 size, Int32 start, Int32 count) {
 			if (start < 0 || start >= size) {
 				throw new OverflowException();
 			}
 			return count == 0 || start + count > size ? size - start : count;
 		}
-	}
+    }
 }
