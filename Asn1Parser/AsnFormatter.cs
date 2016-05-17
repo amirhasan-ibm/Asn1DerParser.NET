@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace SysadminsLV.Asn1Parser {
-	/// <summary>
-	/// This class contains methods to convert Base64, Hex and Binary strings to byte array and vice versa.
-	/// </summary>
-	public static class AsnFormatter {
+    /// <summary>
+    /// This class contains methods to convert Base64, Hex and Binary strings to byte array and vice versa.
+    /// </summary>
+    public static class AsnFormatter {
 		const String certHeader = "-----BEGIN CERTIFICATE-----";
 		const String certFooter = "-----END CERTIFICATE-----";
 		const String crlHeader = "-----BEGIN X509 CRL-----";
@@ -17,69 +16,81 @@ namespace SysadminsLV.Asn1Parser {
 		const String reqHeader = "-----BEGIN NEW CERTIFICATE REQUEST-----";
 		const String reqFooter = "-----END NEW CERTIFICATE REQUEST-----";
 		static readonly Char[] _delimiters = { ' ', '-', ':', '\t', '\n', '\r' };
-		
-		/// <summary>
-		/// Gets or sets the value that indicates where hex octets are encoded in upper case (e.g. 'EF', instead of 'ef').
-		/// </summary>
-		public static Boolean ForceHexUpperCase { get; set; }
-		/// <summary>
-		/// Converts and formats byte array to a string. See <see cref="EncodingType"/> for encoding examples.
-		/// </summary>
-		/// <param name="rawData">Byte array to format.</param>
-		/// <param name="encoding">Specifies the encoding for formatting. Default is <strong>HexRaw</strong></param>
-		/// <param name="format">
-		///		Specifies the encoding options. The default behavior is to use a carriage return/line feed
-		///		(CR/LF) pair (0x0D/0x0A) to represent a new line.
-		/// </param>
-		/// <param name="start">Specifies the start position of the byte array to format. Default is zero.</param>
-		/// <param name="count">Specifies how many bytes must be formatted. If zero, entire byte array will be encoded.</param>
-		/// <exception cref="ArgumentException">An invalid encoding type was specified.</exception>
-		/// <returns>Encoded and formatted string.</returns>
-		/// <remarks>
-		/// This method do not support the following encoding types:
-		/// <list type="bullet">
-		/// <item><description>Binary</description></item>
-		/// <item><description>Base64Any</description></item>
-		/// <item><description>StringAny</description></item>
-		/// <item><description>HexAny</description></item>
-		/// </list>
-		/// </remarks>
-		public static String BinaryToString(Byte[] rawData, EncodingType encoding = EncodingType.HexRaw, EncodingFormat format = EncodingFormat.CRLF, Int32 start = 0, Int32 count = 0) {
+
+	    /// <summary>
+	    /// Converts and formats byte array to a string. See <see cref="EncodingType"/> for encoding examples.
+	    /// </summary>
+	    /// <param name="rawData">Byte array to format.</param>
+	    /// <param name="encoding">Specifies the encoding for formatting. Default is <strong>HexRaw</strong></param>
+	    /// <param name="format">
+	    /// 	Specifies the encoding options. The default behavior is to use a carriage return/line feed
+	    /// 	(CR/LF) pair (0x0D/0x0A) to represent a new line.
+	    /// </param>
+	    /// <param name="start">Specifies the start position of the byte array to format. Default is zero.</param>
+	    /// <param name="count">Specifies how many bytes must be formatted. If zero, entire byte array will be encoded.</param>
+	    /// <param name="forceUpperCase">
+	    /// Specifies whether the force hex octet representation in upper case. Default is lower case.
+	    /// <para>
+	    /// This parameter has effect only when hex encoding is selected in the <strong>encoding</strong> parameter:
+	    /// <strong>Hex</strong>, <strong>HexRaw</strong>, <strong>HexAddress</strong>, <strong>HexAscii</strong>
+	    /// and <strong>HexAsciiAddress</strong>. For other values, this parameter is silently ignored.
+	    /// </para>
+	    /// </param>
+	    /// <exception cref="ArgumentException">An invalid encoding type was specified.</exception>
+	    /// <returns>Encoded and formatted string.</returns>
+	    /// <remarks>
+	    /// This method do not support the following encoding types:
+	    /// <list type="bullet">
+	    /// <item><description>Binary</description></item>
+	    /// <item><description>Base64Any</description></item>
+	    /// <item><description>StringAny</description></item>
+	    /// <item><description>HexAny</description></item>
+	    /// </list>
+	    /// </remarks>
+	    public static String BinaryToString(Byte[] rawData, EncodingType encoding = EncodingType.HexRaw, EncodingFormat format = EncodingFormat.CRLF, Int32 start = 0, Int32 count = 0, Boolean forceUpperCase = false) {
 			if (rawData == null) { throw new ArgumentNullException("rawData"); }
 			switch (encoding) {
 				case EncodingType.Base64:
 				case EncodingType.Base64Header:
 				case EncodingType.Base64CrlHeader:
 				case EncodingType.Base64RequestHeader: return toBase64(rawData, encoding, format, start, count);
-				case EncodingType.Hex: return toHex(rawData, format, start, count);
-				case EncodingType.HexAddress: return toHexAddr(rawData, format, start, count);
-				case EncodingType.HexAscii: return toHexAscii(rawData, format, start, count);
-				case EncodingType.HexAsciiAddress: return toHexAddrAscii(rawData, format, start, count);
-				case EncodingType.HexRaw: return toHexRaw(rawData, start, count);
+				case EncodingType.Hex: return toHex(rawData, format, start, count, forceUpperCase);
+				case EncodingType.HexAddress: return toHexAddr(rawData, format, start, count, forceUpperCase);
+				case EncodingType.HexAscii: return toHexAscii(rawData, format, start, count, forceUpperCase);
+				case EncodingType.HexAsciiAddress: return toHexAddrAscii(rawData, format, start, count, forceUpperCase);
+				case EncodingType.HexRaw: return toHexRaw(rawData, start, count, forceUpperCase);
 				default: throw new ArgumentException("An invalid encoding type is specified");
 			}
 		}
-		/// <summary>
-		/// Converts and formats current poisition af the <see cref="Asn1Reader"/> object.
-		/// </summary>
-		/// <param name="asn"><see cref="Asn1Reader"/> object in the desired state.</param>
-		/// <param name="encoding">Specifies the encoding for formatting. Default is <strong>HexRaw</strong></param>
-		/// <param name="format">
-		///		Specifies the encoding options. The default behavior is to use a carriage return/line feed
-		///		(CR/LF) pair (0x0D/0x0A) to represent a new line.
-		/// </param>
-		/// <exception cref="ArgumentException">An invalid encoding type was specified.</exception>
-		/// <returns>Encoded and formatted string.</returns>
-		/// <remarks>
-		/// This method do not support the following encoding types:
-		/// <list type="bullet">
-		/// <item><description>Binary</description></item>
-		/// <item><description>Base64Any</description></item>
-		/// <item><description>StringAny</description></item>
-		/// <item><description>HexAny</description></item>
-		/// </list>
-		/// </remarks>
-		public static String BinaryToString(Asn1Reader asn, EncodingType encoding = EncodingType.HexRaw, EncodingFormat format = EncodingFormat.CRLF) {
+        /// <summary>
+        /// Converts and formats current poisition af the <see cref="Asn1Reader"/> object.
+        /// </summary>
+        /// <param name="asn"><see cref="Asn1Reader"/> object in the desired state.</param>
+        /// <param name="encoding">Specifies the encoding for formatting. Default is <strong>HexRaw</strong></param>
+        /// <param name="format">
+        ///		Specifies the encoding options. The default behavior is to use a carriage return/line feed
+        ///		(CR/LF) pair (0x0D/0x0A) to represent a new line.
+        /// </param>
+        /// <param name="forceUpperCase">
+        /// Specifies whether the force hex octet representation in upper case. Default is lower case.
+        ///  <para>
+        /// This parameter has effect only when hex encoding is selected in the <strong>encoding</strong> parameter:
+        /// <strong>Hex</strong>, <strong>HexRaw</strong>, <strong>HexAddress</strong>, <strong>HexAscii</strong>
+        /// and <strong>HexAsciiAddress</strong>. For other values, this parameter is silently ignored.
+        ///  </para>
+        ///  </param>
+        /// <exception cref="ArgumentException">An invalid encoding type was specified.</exception>
+        /// <returns>Encoded and formatted string.</returns>
+        /// <remarks>
+        /// This method do not support the following encoding types:
+        /// <list type="bullet">
+        /// <item><description>Binary</description></item>
+        /// <item><description>Base64Any</description></item>
+        /// <item><description>StringAny</description></item>
+        /// <item><description>HexAny</description></item>
+        /// </list>
+        /// </remarks>
+        public static String BinaryToString(Asn1Reader asn, EncodingType encoding = EncodingType.HexRaw, EncodingFormat format = EncodingFormat.CRLF, Boolean forceUpperCase = false) {
 			if (asn == null) { throw new ArgumentNullException("asn"); }
 			if (asn.PayloadLength == 0) { return String.Empty; }
 			switch (encoding) {
@@ -87,11 +98,11 @@ namespace SysadminsLV.Asn1Parser {
 				case EncodingType.Base64Header:
 				case EncodingType.Base64CrlHeader:
 				case EncodingType.Base64RequestHeader: return toBase64(asn.RawData, encoding, format, asn.PayloadStartOffset, asn.PayloadLength);
-				case EncodingType.Hex: return toHex(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength);
-				case EncodingType.HexAddress: return toHexAddr(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength);
-				case EncodingType.HexAscii: return toHexAscii(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength);
-				case EncodingType.HexAsciiAddress: return toHexAddrAscii(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength);
-				case EncodingType.HexRaw: return toHexRaw(asn.RawData, asn.PayloadStartOffset, asn.PayloadLength);
+				case EncodingType.Hex: return toHex(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength, forceUpperCase);
+				case EncodingType.HexAddress: return toHexAddr(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength, forceUpperCase);
+				case EncodingType.HexAscii: return toHexAscii(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength, forceUpperCase);
+				case EncodingType.HexAsciiAddress: return toHexAddrAscii(asn.RawData, format, asn.PayloadStartOffset, asn.PayloadLength, forceUpperCase);
+				case EncodingType.HexRaw: return toHexRaw(asn.RawData, asn.PayloadStartOffset, asn.PayloadLength, forceUpperCase);
 				default: throw new ArgumentException("An invalid encoding type is specified");
 			}
 		}
@@ -104,7 +115,7 @@ namespace SysadminsLV.Asn1Parser {
 		/// <exception cref="InvalidDataException">The string cannot be decoded.</exception>
 		/// <returns>Original byte array.</returns>
 		/// <remarks>This method may not be fully compatible with
-		/// <see cref="BinaryToString(Byte[],EncodingType,EncodingFormat,Int32,Int32)">BinaryToString</see>
+		/// <see cref="BinaryToString(Byte[],EncodingType,EncodingFormat,Int32,Int32,Boolean)">BinaryToString</see>
 		/// method.
 		/// </remarks>
 		public static Byte[] StringToBinary(String input, EncodingType encoding = EncodingType.Base64) {
@@ -171,27 +182,27 @@ namespace SysadminsLV.Asn1Parser {
 			return rawBytes != null ? EncodingType.HexAscii : EncodingType.Binary;
 		}
 
-		static String toHexRaw(Byte[] rawData, Int32 start, Int32 count) {
+		static String toHexRaw(Byte[] rawData, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			for (Int32 i = start; i < start + count; i++) {
-				byteToHexOctet(SB, rawData[i]);
+				byteToHexOctet(SB, rawData[i], forceUpperCase);
 			}
 			return SB.ToString();
 		}
-		static String toHex(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count) {
+		static String toHex(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			if (format == EncodingFormat.NOCRLF) {
 				for (Int32 i = start; i < start + count; i++) {
-                    byteToHexOctet(SB, rawData[i]);
+                    byteToHexOctet(SB, rawData[i], forceUpperCase);
                 }
 				return SB.Remove(SB.Length - 1, 1).ToString();
 			}
 			Int32 n = 0;
 			for (Int32 index = start; index < start + count; index++) {
 				n++;
-                byteToHexOctet(SB, rawData[index]);
+                byteToHexOctet(SB, rawData[index], forceUpperCase);
                 if (index == start) {
 					SB.Append(" ");
 					continue;
@@ -214,7 +225,7 @@ namespace SysadminsLV.Asn1Parser {
 			}
 			return SB.ToString();
 		}
-		static String toHexAddr(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count) {
+		static String toHexAddr(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			Int32 rowCount = 0, n = 0;
@@ -222,14 +233,14 @@ namespace SysadminsLV.Asn1Parser {
             for (Int32 index = start; index < start + count; index++) {
 				if (n % 16 == 0) {
 					String addr = Convert.ToString(rowCount, 16).PadLeft(addrLength, '0');
-					if (ForceHexUpperCase) {
+					if (forceUpperCase) {
 						addr = addr.ToUpper();
 					}
 					SB.Append(addr);
 					SB.Append("    ");
 					rowCount += 16;
 				}
-                byteToHexOctet(SB, rawData[index]);
+                byteToHexOctet(SB, rawData[index], forceUpperCase);
                 if (index == start) {
 					SB.Append(" ");
 					n++;
@@ -254,14 +265,14 @@ namespace SysadminsLV.Asn1Parser {
 			}
 			return SB.ToString();
 		}
-		static String toHexAscii(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count) {
+		static String toHexAscii(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			StringBuilder ascii = new StringBuilder(8);
 			Int32 n = 0;
 			for (Int32 index = 0; index < start + count; index++) {
 				n++;
-                byteToHexOctet(SB, rawData[index]);
+                byteToHexOctet(SB, rawData[index], forceUpperCase);
                 Char c = rawData[index] < 32 || rawData[index] > 126
 						? '.'
 						: (Char)rawData[index];
@@ -302,7 +313,7 @@ namespace SysadminsLV.Asn1Parser {
 			}
 			return SB.ToString();
 		}
-		static String toHexAddrAscii(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count) {
+		static String toHexAddrAscii(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
 			StringBuilder ascii = new StringBuilder(8);
@@ -311,14 +322,14 @@ namespace SysadminsLV.Asn1Parser {
 			for (Int32 index = 0; index < start + count; index++) {
 				if (n % 16 == 0) {
 					String addr = Convert.ToString(rowCount, 16).PadLeft(addrLength, '0');
-					if (ForceHexUpperCase) {
+					if (forceUpperCase) {
 						addr = addr.ToUpper();
 					}
 					SB.Append(addr);
 					SB.Append("    ");
 					rowCount += 16;
 				}
-                byteToHexOctet(SB, rawData[index]);
+                byteToHexOctet(SB, rawData[index], forceUpperCase);
                 Char c = rawData[index] < 32 || rawData[index] > 126
 						? '.'
 						: (Char)rawData[index];
@@ -754,14 +765,14 @@ namespace SysadminsLV.Asn1Parser {
 				? 4
 				: (h.Length % 2 == 0 ? h.Length : h.Length + 1);
 		}
-        static void byteToHexOctet(StringBuilder sb, Byte b) {
-            sb.Append(byteToHexChar((b >> 4) & 15));
-            sb.Append(byteToHexChar(b & 15));
+        static void byteToHexOctet(StringBuilder sb, Byte b, Boolean forceUpperCase) {
+            sb.Append(byteToHexChar((b >> 4) & 15, forceUpperCase));
+            sb.Append(byteToHexChar(b & 15, forceUpperCase));
         }
-        static Char byteToHexChar(Int32 b) {
+        static Char byteToHexChar(Int32 b, Boolean forceUpperCase) {
             return b < 10
                 ? (Char)(b + 48)
-                : (ForceHexUpperCase ? (Char)(b + 55) : (Char)(b + 87));
+                : (forceUpperCase ? (Char)(b + 55) : (Char)(b + 87));
         }
         static Boolean testWhitespace(Char c) {
             return c == ' '  ||
