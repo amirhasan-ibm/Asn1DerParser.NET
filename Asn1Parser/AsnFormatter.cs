@@ -492,7 +492,7 @@ namespace SysadminsLV.Asn1Parser {
 					if (i + 1 == input.Length || !testHexChar(input[i + 1])) {
 						return null;
 					}
-                    bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
+                    bytes.Add((Byte)(hexCharToByte(input[i]) << 4 | hexCharToByte(input[i + 1])));
                     i++;
 				} else if (!testDelimiter(input[i])) {
 					return null;
@@ -558,9 +558,9 @@ namespace SysadminsLV.Asn1Parser {
 					}
 				} else {
 					if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
-                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
-                        // octet pair must be followed by delimiter.
-                        if (i + 2 < input.Length) {
+						bytes.Add((Byte)(hexCharToByte(input[i]) << 4 | hexCharToByte(input[i + 1])));
+						// octet pair must be followed by delimiter.
+						if (i + 2 < input.Length) {
 							if (!testDelimiter(input[i + 2])) { return null; }
 						}
 						octetCount++;
@@ -626,8 +626,8 @@ namespace SysadminsLV.Asn1Parser {
 							return null;
 						}
 					} else if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
-                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
-                        octetCount++;
+						bytes.Add((Byte)(hexCharToByte(input[i]) << 4 | hexCharToByte(input[i + 1])));
+						octetCount++;
 						i++;
 						if (i + 1 < input.Length) {
 							// rule 5
@@ -722,8 +722,8 @@ namespace SysadminsLV.Asn1Parser {
 							return null;
 						}
 					} else if (testHexChar(input[i]) && i + 1 < input.Length && testHexChar(input[i + 1])) {
-                        bytes.Add((Byte)(input[i] << 4 | input[i + 1]));
-                        octetCount++;
+						bytes.Add((Byte)(hexCharToByte(input[i]) << 4 | hexCharToByte(input[i + 1])));
+						octetCount++;
 						i++;
 						if (i + 1 < input.Length) {
 							// rule 5
@@ -769,7 +769,16 @@ namespace SysadminsLV.Asn1Parser {
             sb.Append(byteToHexChar((b >> 4) & 15, forceUpperCase));
             sb.Append(byteToHexChar(b & 15, forceUpperCase));
         }
-        static Char byteToHexChar(Int32 b, Boolean forceUpperCase) {
+		// unchecked.
+		static Byte hexCharToByte(Char c) {
+			return c >= '0' && c <= '9'
+				? (byte) (c - '0')
+				: (c >= 'a' && c <= 'f'
+					? (byte) (c - 'a' + 10)
+					: (byte) (c - 'A' + 10));
+		}
+
+	    static Char byteToHexChar(Int32 b, Boolean forceUpperCase) {
             return b < 10
                 ? (Char)(b + 48)
                 : (forceUpperCase ? (Char)(b + 55) : (Char)(b + 87));
