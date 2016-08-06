@@ -193,12 +193,12 @@ namespace SysadminsLV.Asn1Parser {
 		static String toHex(Byte[] rawData, EncodingFormat format, Int32 start, Int32 count, Boolean forceUpperCase) {
 			count = getCount(rawData.Length, start, count);
 			StringBuilder SB = new StringBuilder();
-			if (format == EncodingFormat.NOCRLF) {
-				for (Int32 i = start; i < start + count; i++) {
-                    byteToHexOctet(SB, rawData[i], forceUpperCase);
-                }
-				return SB.Remove(SB.Length - 1, 1).ToString();
-			}
+			//if (format == EncodingFormat.NOCRLF) {
+			//	for (Int32 i = start; i < start + count; i++) {
+					//byteToHexOctet(SB, rawData[i], forceUpperCase);
+				//}
+			//	return SB.Remove(SB.Length - 1, 1).ToString();
+			//}
 			Int32 n = 0;
 			for (Int32 index = start; index < start + count; index++) {
 				n++;
@@ -208,8 +208,12 @@ namespace SysadminsLV.Asn1Parser {
 					continue;
 				}
 				if (n % 16 == 0) {
-					SB.Append(format == EncodingFormat.NOCR ? "\n" : "\r\n");
-				} else if (n % 8 == 0) {
+					switch (format) {
+						case EncodingFormat.NOCRLF: SB.Append(" "); break;
+						case EncodingFormat.CRLF: SB.Append("\r\n"); break;
+						case EncodingFormat.NOCR: SB.Append("\n"); break;
+					}
+				} else if (n % 8 == 0 && format != EncodingFormat.NOCRLF) {
 					SB.Append("  ");
 				} else {
 					SB.Append(" ");
