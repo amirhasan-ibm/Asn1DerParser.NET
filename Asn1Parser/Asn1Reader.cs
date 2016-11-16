@@ -151,7 +151,7 @@ namespace SysadminsLV.Asn1Parser {
             // processing rules (assuming zero-based bits):
             // if bit 5 is set to "1", or the type is SEQUENCE/SET -- the type is constructed. Unroll nested types.
             // if bit 5 is set to "0", attempt to resolve nested types only for UNIVERSAL tags.
-            if (_excludedTags.Contains(Tag) || PayloadLength <= 2) { return; }
+            if (_excludedTags.Contains(Tag) || PayloadLength < 2) { return; }
             Int64 pstart = PayloadStartOffset;
             Int32 plength = PayloadLength;
 	        if (Tag == 3) {
