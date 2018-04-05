@@ -72,7 +72,6 @@
     <Compile Include="Universal\Asn1UTF8String.cs" />
     <Compile Include="Universal\Asn1VisibleString.cs" />
     <Compile Include="Universal\UniversalTagBase.cs" />
-    <Compile Include="Utils\AsnInternalMap.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Strings.cs" />
     <Compile Include="Utils\StringUtils.cs" />

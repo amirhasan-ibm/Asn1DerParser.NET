@@ -435,5 +435,10 @@ namespace SysadminsLV.Asn1Parser {
         public static List<Byte> GetRestrictedTags() {
             return _excludedTags.ToList();
         }
+
+        class AsnInternalMap {
+            public Int64 LevelStart { get; set; }
+            public Int64 LevelEnd { get; set; }
+        }
     }
 }
