@@ -51,8 +51,9 @@ namespace SysadminsLV.Asn1Parser.CLRExtensions.Generics {
         /// </summary>
         /// <param name="collection">Items to add</param>
 		public new void AddRange(IEnumerable<T> collection) {
-			base.AddRange(collection);
-			var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(collection));
+	        IEnumerable<T> enumerable = collection as T[] ?? collection.ToArray();
+	        base.AddRange(enumerable);
+			var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T>(enumerable));
 			OnCollectionChanged(e);
 		}
         /// <summary>
@@ -198,10 +199,8 @@ namespace SysadminsLV.Asn1Parser.CLRExtensions.Generics {
         /// <param name="propertyName">Property name which value is changed.</param>
 		protected void OnPropertyChanged(String propertyName) {
 			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) {
-				handler(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
+	        handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>

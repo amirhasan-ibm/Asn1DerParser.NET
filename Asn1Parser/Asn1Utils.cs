@@ -742,7 +742,25 @@ namespace SysadminsLV.Asn1Parser {
 		static String DecodeBMPString(Asn1Reader asn) {
 			return Encoding.BigEndianUnicode.GetString(asn.RawData, asn.PayloadStartOffset, asn.PayloadLength);
 		}
-		#endregion
-		#endregion
-	}
+        #endregion
+        #region Data type robust encoders
+        internal static Byte[] EncodeEditValue(String input, Asn1Type tag, Boolean isHex) {
+            if (isHex) {
+                return Encode(AsnFormatter.StringToBinary(input, EncodingType.Hex), (Byte)tag);
+            }
+            switch (tag) {
+                case Asn1Type.BIT_STRING:
+                    return null;
+                case Asn1Type.BMPString:
+                    return null;
+                case Asn1Type.BOOLEAN:
+                    return null;
+                case Asn1Type.CHARACTER_STRING:
+                    return null;
+            }
+            return null;
+        }
+        #endregion
+        #endregion
+    }
 }
