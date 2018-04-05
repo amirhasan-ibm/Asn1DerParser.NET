@@ -2,10 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using SysadminsLV.Asn1Parser.CLRExtensions;
+using SysadminsLV.Asn1Parser.Utils.CLRExtensions;
 
 namespace SysadminsLV.Asn1Parser.Universal {
-	public sealed class Asn1Integer : UniversalTagBase {
+    public sealed class Asn1Integer : UniversalTagBase {
 		const Byte tag = (Byte)Asn1Type.INTEGER;
 
 		public Asn1Integer(BigInteger inputInteger) {

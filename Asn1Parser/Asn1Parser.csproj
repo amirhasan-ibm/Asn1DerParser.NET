@@ -47,14 +47,12 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CLRExtensions\Generics\ObservableList.cs" />
     <Compile Include="Asn1Reader.cs" />
     <Compile Include="Asn1Class.cs" />
     <Compile Include="Asn1Type.cs" />
     <Compile Include="Asn1Utils.cs" />
     <Compile Include="AsnFormatter.cs" />
     <Compile Include="Asn1InvalidTagException.cs" />
-    <Compile Include="CLRExtensions\BigInteger2.cs" />
     <Compile Include="EncodingFormat.cs" />
     <Compile Include="EncodingType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,13 +70,12 @@
     <Compile Include="Universal\Asn1UTF8String.cs" />
     <Compile Include="Universal\Asn1VisibleString.cs" />
     <Compile Include="Universal\UniversalTagBase.cs" />
+    <Compile Include="Utils\CLRExtensions\BigIntegerExtensions.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\Strings.cs" />
     <Compile Include="Utils\StringUtils.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tree\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="CompiledDLL\SysadminsLV.Asn1Parser.dll" />
   </ItemGroup>
