@@ -129,6 +129,9 @@ namespace SysadminsLV.Asn1Parser {
             if (Tag == 0) {
                 throw new Asn1InvalidTagException(Offset);
             }
+            if ((Tag & (Byte) Asn1Class.CONSTRUCTED) > 0) {
+                IsConstructed = true;
+            }
             if (PayloadLength == 0) {
                 NextOffset = Offset + TagLength == RawData.Length
                     ? 0
@@ -164,7 +167,7 @@ namespace SysadminsLV.Asn1Parser {
                 pstart = PayloadStartOffset + 1;
                 plength = PayloadLength - 1;
             }
-            if (_multiNestedTypes.Contains(Tag) || (Tag & (Byte)Asn1Class.CONSTRUCTED) > 0) {
+            if (_multiNestedTypes.Contains(Tag)) {
                 IsConstructed = true;
                 if (!_offsetMap.ContainsKey(pstart)) {
                     predict(pstart, plength, true, out childCount);

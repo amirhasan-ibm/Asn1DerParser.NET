@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Abstract Syntax Notation 1 .NET Library")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("ASN.1 binary parser and utility set for binary data encoded with Distinguished Encoding Rules (DER)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sysadmins LV")]
 [assembly: AssemblyProduct("ASN1 DER Parser")]
-[assembly: AssemblyCopyright("Copyright © Vadims Podans 2008 - 2015")]
+[assembly: AssemblyCopyright("Copyright © Vadims Podans 2012 - 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.3.8")]
-[assembly: AssemblyFileVersion("1.2.3.8")]
+[assembly: AssemblyVersion("1.2.3.9")]
+[assembly: AssemblyFileVersion("1.2.3.9")]
