@@ -1,25 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asn1Parser", "Asn1Parser\Asn1Parser.csproj", "{F18F1812-FD65-4206-8869-B1DBB4D59AC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asn1ParserTests", "Asn1ParserTests\Asn1ParserTests.csproj", "{56F7C33E-12EB-4685-B514-64384F747E95}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://pspkix.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Asn1Parser\\Asn1Parser.csproj
-		SccProjectName1 = Asn1Parser
-		SccLocalPath1 = Asn1Parser
-		SccProjectUniqueName2 = Asn1ParserTests\\Asn1Parser.csproj
-		SccProjectName2 = Asn1ParserTests
-		SccLocalPath2 = Asn1ParserTests
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -36,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1F6FDE1-A4A9-4257-82D9-2CFC87B32B09}
 	EndGlobalSection
 EndGlobal
