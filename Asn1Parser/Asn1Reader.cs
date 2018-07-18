@@ -63,7 +63,7 @@ namespace SysadminsLV.Asn1Parser {
         public Asn1Reader(Byte[] rawData) : this(rawData, 0) { }
 
         Asn1Reader(Byte[] rawData, Int32 offset) {
-            if (rawData == null) { throw new ArgumentNullException("rawData"); }
+            if (rawData == null) { throw new ArgumentNullException(nameof(rawData)); }
             if (rawData.Length < 2) { throw new Win32Exception(Strings.InvalidDataException); }
             currentPosition = new AsnInternalMap();
             _offsetMap.Add(0, currentPosition);
@@ -129,7 +129,7 @@ namespace SysadminsLV.Asn1Parser {
             if (Tag == 0) {
                 throw new Asn1InvalidTagException(Offset);
             }
-            if ((Tag & (Byte) Asn1Class.CONSTRUCTED) > 0) {
+            if (_multiNestedTypes.Contains(Tag) || (Tag & (Byte) Asn1Class.CONSTRUCTED) > 0) {
                 IsConstructed = true;
             }
             if (PayloadLength == 0) {
@@ -167,8 +167,7 @@ namespace SysadminsLV.Asn1Parser {
                 pstart = PayloadStartOffset + 1;
                 plength = PayloadLength - 1;
             }
-            if (_multiNestedTypes.Contains(Tag)) {
-                IsConstructed = true;
+            if (IsConstructed) {
                 if (!_offsetMap.ContainsKey(pstart)) {
                     predict(pstart, plength, true, out childCount);
                 }
