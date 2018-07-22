@@ -93,7 +93,7 @@ namespace SysadminsLV.Asn1Parser {
         /// </list>
         /// </remarks>
         public static String BinaryToString(Asn1Reader asn, EncodingType encoding = EncodingType.HexRaw, EncodingFormat format = EncodingFormat.CRLF, Boolean forceUpperCase = false) {
-            if (asn == null) { throw new ArgumentNullException("asn"); }
+            if (asn == null) { throw new ArgumentNullException(nameof(asn)); }
             if (asn.PayloadLength == 0) { return String.Empty; }
             switch (encoding) {
                 case EncodingType.Base64:
@@ -778,10 +778,10 @@ namespace SysadminsLV.Asn1Parser {
         // unchecked.
         static Byte hexCharToByte(Char c) {
             return c >= '0' && c <= '9'
-                ? (byte) (c - '0')
+                ? (Byte) (c - '0')
                 : (c >= 'a' && c <= 'f'
-                    ? (byte) (c - 'a' + 10)
-                    : (byte) (c - 'A' + 10));
+                    ? (Byte) (c - 'a' + 10)
+                    : (Byte) (c - 'A' + 10));
         }
 
         static Char byteToHexChar(Int32 b, Boolean forceUpperCase) {

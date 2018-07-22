@@ -240,7 +240,7 @@ namespace SysadminsLV.Asn1Parser {
             if ((tag & (Byte)Asn1Class.PRIVATE) != 0) {
                 switch (tag & (Byte)Asn1Class.PRIVATE) {
                     case (Byte)Asn1Class.CONTEXT_SPECIFIC:
-                        TagName = "CONTEXT SPECIFIC (" + (tag & 31) + ")";
+                        TagName = "CONTEXT_SPECIFIC (" + (tag & 31) + ")";
                         isTaggedConstructed = (tag & (Byte)Asn1Class.CONSTRUCTED) > 0;
                         break;
                     case (Byte)Asn1Class.APPLICATION:
@@ -411,10 +411,12 @@ namespace SysadminsLV.Asn1Parser {
         /// <returns>ASN.1 object that represents current tag.</returns>
         public UniversalTagBase GetTagObject() {
             switch (Tag) {
+                case (Byte)Asn1Type.OBJECT_IDENTIFIER:
+                    return new Asn1ObjectIdentifier(this);
                 case (Byte)Asn1Type.BIT_STRING:
                     return new Asn1BitString(this);
                 default:
-                    return new UniversalTagBase(this);
+                    return new Asn1GenericType(this);
             }
         }
         /// <summary>
