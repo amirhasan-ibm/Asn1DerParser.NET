@@ -6,7 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents an ASN.1 <strong>GeneralizedTime</strong> data type.
     /// </summary>
-    public sealed class Asn1GeneralizedTime : Asn1ValueClass<DateTime> {
+    public sealed class Asn1GeneralizedTime : UniversalTagBase {
         TimeZoneInfo zoneInfo;
         const Asn1Type TYPE = Asn1Type.GeneralizedTime;
         const Byte     TAG  = (Byte)TYPE;
@@ -65,6 +65,10 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// Gets the time zone information for the current object.
         /// </summary>
         public TimeZoneInfo ZoneInfo => zoneInfo;
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public DateTime Value { get; private set; }
 
         void m_encode(DateTime time, TimeZoneInfo zone, Boolean preciseTime) {
             Value = time;

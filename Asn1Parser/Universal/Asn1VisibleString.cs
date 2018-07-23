@@ -9,7 +9,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// printing character set. International printing character set contains characters starting from 32 and up to 126
     /// codes in ASCII character table.
     /// </summary>
-    public sealed class Asn1VisibleString : Asn1ValueClass<String> {
+    public sealed class Asn1VisibleString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.VisibleString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -54,6 +54,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1VisibleString(String inputString) {
             m_encode(inputString);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (inputString.Any(c => c < 32 || c > 126)) {

@@ -8,7 +8,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 <strong>IA5String</strong> data type. IA5String contains characters
     /// from International ASCII character (International Alphabet 5) set.
     /// </summary>
-    public sealed class Asn1IA5String : Asn1ValueClass<String> {
+    public sealed class Asn1IA5String : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.IA5String;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -52,6 +52,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1IA5String(String inputString) {
             m_encode(inputString);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (inputString.Any(c => c > 127)) {

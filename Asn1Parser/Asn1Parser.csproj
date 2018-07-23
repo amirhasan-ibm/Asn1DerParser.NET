@@ -60,7 +60,6 @@
     <Compile Include="Universal\Asn1BmpString.cs" />
     <Compile Include="Universal\Asn1Boolean.cs" />
     <Compile Include="Universal\Asn1GeneralizedTime.cs" />
-    <Compile Include="Universal\Asn1GenericType.cs" />
     <Compile Include="Universal\Asn1IA5String.cs" />
     <Compile Include="Universal\Asn1Integer.cs" />
     <Compile Include="Universal\Asn1Null.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="Universal\Asn1UniversalString.cs" />
     <Compile Include="Universal\Asn1UtcTime.cs" />
     <Compile Include="Universal\Asn1UTF8String.cs" />
-    <Compile Include="Universal\Asn1ValueClass.cs" />
     <Compile Include="Universal\Asn1VisibleString.cs" />
     <Compile Include="Universal\UniversalTagBase.cs" />
     <Compile Include="Utils\CLRExtensions\BigIntegerExtensions.cs" />

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents an ASN.1 <strong>OCTET_STRING</strong> data type.
     /// </summary>
-    public sealed class Asn1OctetString : Asn1ValueClass<Byte> {
+    public sealed class Asn1OctetString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.OCTET_STRING;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -41,6 +39,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1OctetString(Byte[] rawData) : base(rawData) {
             m_decode(new Asn1Reader(rawData));
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public Byte[] Value { get; private set; }
 
         void m_encode(String inputString) {
             //if (inputString.Any(c => (c < 48 || c > 57) && c != 32)) {

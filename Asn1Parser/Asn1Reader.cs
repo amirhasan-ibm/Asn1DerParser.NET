@@ -416,7 +416,7 @@ namespace SysadminsLV.Asn1Parser {
                 case (Byte)Asn1Type.BIT_STRING:
                     return new Asn1BitString(this);
                 default:
-                    return new Asn1GenericType(this);
+                    return new UniversalTagBase(this);
             }
         }
         /// <summary>

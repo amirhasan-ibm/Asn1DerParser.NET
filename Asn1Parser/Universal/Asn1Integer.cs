@@ -7,7 +7,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents an ASN.1 <strong>INTEGER</strong> data type.
     /// </summary>
-    public sealed class Asn1Integer : Asn1ValueClass<BigInteger> {
+    public sealed class Asn1Integer : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.INTEGER;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -42,6 +42,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1Integer(BigInteger inputInteger) {
             m_encode(inputInteger);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public BigInteger Value { get; private set; }
 
         void m_encode(BigInteger inputInteger) {
             Value = inputInteger;

@@ -6,7 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents a <strong>BIT_STRING</strong> ASN.1 tag object.
     /// </summary>
-    public sealed class Asn1BitString : Asn1ValueClass<Byte[]> {
+    public sealed class Asn1BitString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.BIT_STRING;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -58,6 +58,10 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// Gets the count of unused bits in the current <strong>BIT_STRING</strong>.
         /// </summary>
         public Byte UnusedBits { get; private set; }
+        /// <summary>
+        /// Gets raw value of BIT_STRING without unused bits identifier.
+        /// </summary>
+        public Byte[] Value { get; private set; }
 
         void m_encode(Byte[] value, Boolean calc) {
             Value = value;

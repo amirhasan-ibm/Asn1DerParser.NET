@@ -8,7 +8,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 TeletexString data type. TeletexString may contain characters from T.101 and CCITT, which
     /// are basically characters encoded with 7-bits (0-127 in ASCII table).
     /// </summary>
-    public sealed class Asn1TeletexString : Asn1ValueClass<String> {
+    public sealed class Asn1TeletexString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.TeletexString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -52,6 +52,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1TeletexString(String inputString) {
             m_encode(inputString);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (inputString.Any(c => c > 127)) {

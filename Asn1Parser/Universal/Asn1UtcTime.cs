@@ -6,7 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents ASN.1 <strong>UTCTime</strong> universal tag.
     /// </summary>
-    public sealed class Asn1UtcTime : Asn1ValueClass<DateTime> {
+    public sealed class Asn1UtcTime : UniversalTagBase {
         TimeZoneInfo zoneInfo;
         const Asn1Type TYPE = Asn1Type.UTCTime;
         const Byte     TAG  = (Byte)TYPE;
@@ -60,6 +60,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
             }
             m_decode(rawData);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public DateTime Value { get; private set; }
 
         /// <summary>
         /// Gets the time zone information for the current object.

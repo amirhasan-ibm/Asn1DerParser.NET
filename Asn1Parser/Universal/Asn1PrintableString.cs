@@ -10,7 +10,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 <strong>PrintableString</strong> data type. PrintableString consis of the following
     /// characters: a-z, A-Z, ' () +,-.?:/= and SPACE.
     /// </summary>
-    public sealed class Asn1PrintableString : Asn1ValueClass<String> {
+    public sealed class Asn1PrintableString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.PrintableString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -54,6 +54,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1PrintableString(String inputString) {
             m_encode(inputString);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (!testValue(inputString)) {

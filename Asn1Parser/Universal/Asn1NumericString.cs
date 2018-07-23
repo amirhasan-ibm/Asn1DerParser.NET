@@ -8,7 +8,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 <strong>NumericString</strong> data type. NumericString consists of numeric characters
     /// (0-9) and space.
     /// </summary>
-    public sealed class Asn1NumericString : Asn1ValueClass<String> {
+    public sealed class Asn1NumericString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.NumericString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -52,6 +52,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1NumericString(String inputString) {
             m_encode(inputString);
         }
+
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (inputString.Any(c => (c < 48 || c > 57) && c != 32)) {

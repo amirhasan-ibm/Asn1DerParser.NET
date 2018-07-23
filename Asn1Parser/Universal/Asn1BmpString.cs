@@ -6,7 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents a <strong>BMPString</strong> ASN.1 tag object. <Strong>BMPString</Strong> is a 16-bit unicode
     /// string where each character is encoded by using two bytes in Big Endian encoding.
     /// </summary>
-    public sealed class Asn1BMPString : Asn1ValueClass<String> {
+    public sealed class Asn1BMPString : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.BMPString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -44,6 +44,10 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1BMPString(String inputString) {
             m_encode(inputString);
         }
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             Value = inputString;

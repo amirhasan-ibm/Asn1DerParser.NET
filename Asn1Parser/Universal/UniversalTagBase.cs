@@ -4,7 +4,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Repesents a base class for ASN.1 primitive tag classes. This class provides
     /// </summary>
-    public abstract class UniversalTagBase {
+    public class UniversalTagBase {
         /// <summary>
         /// Initializes a new instance of <strong>UniversalTagBase</strong> class.
         /// </summary>
@@ -15,7 +15,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// </summary>
         /// <param name="asn">Existing <see cref="ArgumentNullException"/> class instance.</param>
         /// <exception cref="Asn1Reader"><strong>asn</strong> parameter is null reference.</exception>
-        protected UniversalTagBase(Asn1Reader asn) {
+        public UniversalTagBase(Asn1Reader asn) {
             if (asn == null) { throw new ArgumentNullException(nameof(asn)); }
             Initialize(asn);
         }

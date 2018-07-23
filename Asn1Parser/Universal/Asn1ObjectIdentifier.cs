@@ -8,7 +8,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents ASN.1 Object Identifier type.
     /// </summary>
-    public sealed class Asn1ObjectIdentifier : Asn1ValueClass<Oid> {
+    public sealed class Asn1ObjectIdentifier : UniversalTagBase {
         const Asn1Type TYPE = Asn1Type.OBJECT_IDENTIFIER;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -55,9 +55,14 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <param name="oid">Object identifier (OID).</param>
         public Asn1ObjectIdentifier(Oid oid) : this(oid.Value) { }
 
+        /// <summary>
+        /// Gets value associated with the current object.
+        /// </summary>
+        public Oid Value { get; private set; }
+
         void m_encode(String oid) {
             if (oid == null) {
-                Initialize(new Asn1Reader(new Byte[] {TAG, 0}));
+                Initialize(new Asn1Reader(new Byte[] { TAG, 0 }));
                 Value = new Oid();
                 return;
             }
@@ -87,7 +92,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
                 UInt64 temp = tokens[token];
                 // calculate how many bits are occupied by the current integer value
                 do {
-                    temp = (UInt64) Math.Floor((Double)temp / 2);
+                    temp = (UInt64)Math.Floor((Double)temp / 2);
                     bitLength++;
                 } while (temp > 0);
                 // calculate how many additional bytes are required and encode each integer in a 7 bit.
@@ -140,8 +145,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
                     UInt64 value = UInt64.Parse(strTokens[index]);
                     if (index == 0 && value > 2 || (index == 1 && value > 39)) { return false; }
                     tokens.Add(value);
-                }
-                catch {
+                } catch {
                     tokens = null;
                     return false;
                 }
