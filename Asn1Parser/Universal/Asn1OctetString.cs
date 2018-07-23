@@ -36,9 +36,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="InvalidDataException">
         /// Input data contains invalid NumericString character.
         /// </exception>
-        public Asn1OctetString(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1OctetString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
 
         /// <summary>
         /// Gets value associated with the current object.

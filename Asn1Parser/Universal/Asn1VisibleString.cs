@@ -9,7 +9,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// printing character set. International printing character set contains characters starting from 32 and up to 126
     /// codes in ASCII character table.
     /// </summary>
-    public sealed class Asn1VisibleString : UniversalTagBase {
+    public sealed class Asn1VisibleString : Asn1String {
         const Asn1Type TYPE = Asn1Type.VisibleString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -41,9 +41,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="InvalidDataException">
         /// Input data contains invalid VisibleString character.
         /// </exception>
-        public Asn1VisibleString(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1VisibleString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1VisibleString</strong> class from a unicode string.
         /// </summary>
@@ -54,11 +52,6 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1VisibleString(String inputString) {
             m_encode(inputString);
         }
-
-        /// <summary>
-        /// Gets value associated with the current object.
-        /// </summary>
-        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (inputString.Any(c => c < 32 || c > 126)) {

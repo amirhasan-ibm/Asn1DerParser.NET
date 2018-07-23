@@ -32,14 +32,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not <strong>BIT_STRING</strong> data type.
         /// </exception>
-        public Asn1BitString(Byte[] rawData) : base(rawData) {
-            if (rawData[0] != TAG) {
-                throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
-            }
-            Asn1Reader asn = new Asn1Reader(RawData);
-            UnusedBits = asn.RawData[asn.PayloadStartOffset];
-            Value = asn.GetPayload().Skip(1).ToArray();
-        }
+        public Asn1BitString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         ///  <summary>
         ///  Initializes a new instance of <strong>Asn1BitString</strong> from a raw byte array to encode and parameter that indicates
         ///  whether the bit length is decremented to exclude trailing zero bits.

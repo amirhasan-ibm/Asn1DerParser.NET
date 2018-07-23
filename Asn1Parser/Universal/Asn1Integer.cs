@@ -32,9 +32,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not valid <strong>INTEGER</strong> data type.
         /// </exception>
-        public Asn1Integer(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1Integer(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1Integer</strong> class from an integer value.
         /// </summary>

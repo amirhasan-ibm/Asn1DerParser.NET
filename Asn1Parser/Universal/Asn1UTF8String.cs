@@ -7,7 +7,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 <strong>UTF8String</strong> data type. UTF8String consist of 8-bit encoded characters, including control
     /// characters.
     /// </summary>
-    public sealed class Asn1UTF8String : UniversalTagBase {
+    public sealed class Asn1UTF8String : Asn1String {
         const Asn1Type TYPE = Asn1Type.UTF8String;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -38,9 +38,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="InvalidDataException">
         /// Input data contains invalid UTF8String character.
         /// </exception>
-        public Asn1UTF8String(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1UTF8String(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1UTF8String</strong> class from a unicode string.
         /// </summary>
@@ -51,11 +49,6 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1UTF8String(String inputString) {
             m_encode(inputString);
         }
-
-        /// <summary>
-        /// Gets value associated with the current object.
-        /// </summary>
-        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             if (!testValue(inputString)) {

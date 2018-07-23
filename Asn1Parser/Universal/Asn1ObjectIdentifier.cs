@@ -32,12 +32,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// that represents encoded object identifier.
         /// </summary>
         /// <param name="rawData">Byte array that represents encoded object identifier.</param>
-        public Asn1ObjectIdentifier(Byte[] rawData) : base(rawData) {
-            if (rawData[0] != TAG) {
-                throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
-            }
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1ObjectIdentifier(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1ObjectIdentifier</strong> class from a string
         /// that represents object identifier value.

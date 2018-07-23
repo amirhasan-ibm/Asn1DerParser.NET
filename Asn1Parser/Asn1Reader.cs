@@ -35,7 +35,6 @@ namespace SysadminsLV.Asn1Parser {
         );
         AsnInternalMap currentPosition;
         Int32 childCount;
-        Boolean? isTaggedConstructed;
 
         /// <summary>
         /// Initializes a new instance of the <strong>ASN1</strong> class from an existing
@@ -124,7 +123,7 @@ namespace SysadminsLV.Asn1Parser {
             if (raw != null && TagLength != RawData.Length) {
                 RawData = raw.Take(TagLength).ToArray();
             }
-            getTagName(Tag);
+            TagName = GetTagName(Tag);
             // 0 Tag is reserved for BER and is not available in DER
             if (Tag == 0) {
                 throw new Asn1InvalidTagException(Offset);
@@ -171,7 +170,7 @@ namespace SysadminsLV.Asn1Parser {
                 if (!_offsetMap.ContainsKey(pstart)) {
                     predict(pstart, plength, true, out childCount);
                 }
-                isTaggedConstructed = null;
+
                 return;
             }
             if (Tag > 0 && Tag < (Byte)Asn1Type.TAG_MASK) {
@@ -181,7 +180,6 @@ namespace SysadminsLV.Asn1Parser {
                     predict(pstart, plength, true, out childCount);
                 }
             }
-            isTaggedConstructed = null;
         }
         Boolean predict(Int64 start, Int32 projectedLength, Boolean assignMap, out Int32 estimatedChildCount) {
             Int64 levelStart = start;
@@ -235,27 +233,6 @@ namespace SysadminsLV.Asn1Parser {
             }
             // 2 -- transitional + tag
             return ppayloadLength + lengthbytes + 2;
-        }
-        void getTagName(Byte tag) {
-            if ((tag & (Byte)Asn1Class.PRIVATE) != 0) {
-                switch (tag & (Byte)Asn1Class.PRIVATE) {
-                    case (Byte)Asn1Class.CONTEXT_SPECIFIC:
-                        TagName = "CONTEXT_SPECIFIC (" + (tag & 31) + ")";
-                        isTaggedConstructed = (tag & (Byte)Asn1Class.CONSTRUCTED) > 0;
-                        break;
-                    case (Byte)Asn1Class.APPLICATION:
-                        TagName = "APPLICATION (" + (tag & 31) + ")";
-                        break;
-                    case (Byte)Asn1Class.PRIVATE:
-                        TagName = "PRIVATE (" + (tag & 31) + ")";
-                        break;
-                    case (Byte)Asn1Class.CONSTRUCTED:
-                        TagName = "CONSTRUCTED (" + (tag & 31) + ")";
-                        break;
-                }
-            } else {
-                TagName = ((Asn1Type)(tag & 31)).ToString();
-            }
         }
         void moveAndExpectTypes(Func<Boolean> action, params Byte[] expectedTypes) {
             if (expectedTypes == null) { throw new ArgumentNullException(nameof(expectedTypes)); }
@@ -438,6 +415,27 @@ namespace SysadminsLV.Asn1Parser {
         /// <returns>Byte array.</returns>
         public static List<Byte> GetRestrictedTags() {
             return _excludedTags.ToList();
+        }
+        /// <summary>
+        /// Gets the formatted tag name.
+        /// </summary>
+        /// <param name="tag">Tag numerical value.</param>
+        /// <returns>Formatted tag name</returns>
+        public static String GetTagName(Byte tag) {
+            var index = tag & (Byte)Asn1Type.TAG_MASK;
+            if ((tag & (Byte)Asn1Class.PRIVATE) != 0) {
+                switch (tag & (Byte)Asn1Class.PRIVATE) {
+                    case (Byte)Asn1Class.CONTEXT_SPECIFIC:
+                        return $"CONTEXT_SPECIFIC ({index})";
+                    case (Byte)Asn1Class.APPLICATION:
+                        return $"APPLICATION ({index})";
+                    case (Byte)Asn1Class.PRIVATE:
+                        return $"PRIVATE ({index})";
+                    case (Byte)Asn1Class.CONSTRUCTED:
+                        return $"CONSTRUCTED ({index})";
+                }
+            }
+            return ((Asn1Type)index).ToString();
         }
 
         class AsnInternalMap {

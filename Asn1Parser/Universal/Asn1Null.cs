@@ -36,9 +36,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not valid <strong>NULL</strong> data type.
         /// </exception>
-        public Asn1Null(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1Null(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
 
         void m_decode(Asn1Reader asn) {
             if (asn.PayloadLength > 0) {

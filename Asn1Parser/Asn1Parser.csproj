@@ -59,6 +59,7 @@
     <Compile Include="Universal\Asn1BitString.cs" />
     <Compile Include="Universal\Asn1BmpString.cs" />
     <Compile Include="Universal\Asn1Boolean.cs" />
+    <Compile Include="Universal\Asn1DateTime.cs" />
     <Compile Include="Universal\Asn1GeneralizedTime.cs" />
     <Compile Include="Universal\Asn1IA5String.cs" />
     <Compile Include="Universal\Asn1Integer.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Universal\Asn1ObjectIdentifier.cs" />
     <Compile Include="Universal\Asn1OctetString.cs" />
     <Compile Include="Universal\Asn1PrintableString.cs" />
+    <Compile Include="Universal\Asn1String.cs" />
     <Compile Include="Universal\Asn1TeletexString.cs" />
     <Compile Include="Universal\Asn1UniversalString.cs" />
     <Compile Include="Universal\Asn1UtcTime.cs" />

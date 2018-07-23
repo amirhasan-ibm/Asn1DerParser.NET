@@ -6,8 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// <summary>
     /// Represents an ASN.1 <strong>GeneralizedTime</strong> data type.
     /// </summary>
-    public sealed class Asn1GeneralizedTime : UniversalTagBase {
-        TimeZoneInfo zoneInfo;
+    public sealed class Asn1GeneralizedTime : Asn1DateTime {
         const Asn1Type TYPE = Asn1Type.GeneralizedTime;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -54,31 +53,18 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// The current state of <strong>ASN1</strong> object is not Generalized Time.
         /// </exception>
-        public Asn1GeneralizedTime(Byte[] rawData) : base(rawData) {
-            if (rawData[0] != TAG) {
-                throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
-            }
-            m_decode(rawData);
-        }
-
-        /// <summary>
-        /// Gets the time zone information for the current object.
-        /// </summary>
-        public TimeZoneInfo ZoneInfo => zoneInfo;
-        /// <summary>
-        /// Gets value associated with the current object.
-        /// </summary>
-        public DateTime Value { get; private set; }
+        public Asn1GeneralizedTime(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
 
         void m_encode(DateTime time, TimeZoneInfo zone, Boolean preciseTime) {
             Value = time;
-            zoneInfo = zone;
+            ZoneInfo = zone;
             Initialize(new Asn1Reader(Asn1Utils.Encode(DateTimeUtils.Encode(time, zone, false, preciseTime), TAG)));
         }
         void m_decode(Byte[] rawData) {
             Asn1Reader asn = new Asn1Reader(rawData);
             Initialize(asn);
-            Value = DateTimeUtils.Decode(asn, out zoneInfo);
+            Value = DateTimeUtils.Decode(asn, out TimeZoneInfo zoneInfo);
+            ZoneInfo = zoneInfo;
         }
 
         /// <inheritdoc/>

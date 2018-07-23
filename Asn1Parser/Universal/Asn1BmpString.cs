@@ -6,7 +6,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents a <strong>BMPString</strong> ASN.1 tag object. <Strong>BMPString</Strong> is a 16-bit unicode
     /// string where each character is encoded by using two bytes in Big Endian encoding.
     /// </summary>
-    public sealed class Asn1BMPString : UniversalTagBase {
+    public sealed class Asn1BMPString : Asn1String {
         const Asn1Type TYPE = Asn1Type.BMPString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -31,12 +31,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not <strong>BMPString</strong> data type.
         /// </exception>
-        public Asn1BMPString(Byte[] rawData) : base(rawData) {
-            if (rawData[0] != TAG) {
-                throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
-            }
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1BMPString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1BMPString</strong> class from a unicode string.
         /// </summary>
@@ -44,10 +39,6 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1BMPString(String inputString) {
             m_encode(inputString);
         }
-        /// <summary>
-        /// Gets value associated with the current object.
-        /// </summary>
-        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             Value = inputString;

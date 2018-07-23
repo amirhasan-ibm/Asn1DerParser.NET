@@ -7,7 +7,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
     /// Represents an ASN.1 <strong>UniversalString</strong> data type. Universal String represents strings where each character
     /// is encoded using 4 bytes.
     /// </summary>
-    public sealed class Asn1UniversalString : UniversalTagBase {
+    public sealed class Asn1UniversalString : Asn1String {
         const Asn1Type TYPE = Asn1Type.UniversalString;
         const Byte     TAG  = (Byte)TYPE;
 
@@ -32,9 +32,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not <strong>UniversalString</strong> data type.
         /// </exception>
-        public Asn1UniversalString(Byte[] rawData) : base(rawData) {
-            m_decode(new Asn1Reader(rawData));
-        }
+        public Asn1UniversalString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1UniversalString</strong> class from a unicode string.
         /// </summary>
@@ -45,11 +43,6 @@ namespace SysadminsLV.Asn1Parser.Universal {
         public Asn1UniversalString(String inputString) {
             m_encode(inputString);
         }
-
-        /// <summary>
-        /// Gets value associated with the current object.
-        /// </summary>
-        public String Value { get; private set; }
 
         void m_encode(String inputString) {
             Value = inputString;

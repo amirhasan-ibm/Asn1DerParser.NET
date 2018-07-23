@@ -19,16 +19,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
             if (asn == null) { throw new ArgumentNullException(nameof(asn)); }
             Initialize(asn);
         }
-        /// <summary>
-        /// Initializes a new instance of <strong>UniversalTagBase</strong> from a ASN.1-encoded byte array.
-        /// </summary>
-        /// <param name="rawData">ASN.1-encoded byte array.</param>
-        /// <exception cref="ArgumentNullException"><strong>asn</strong> parameter is null reference.</exception>
-        protected UniversalTagBase(Byte[] rawData) {
-            if (rawData == null) { throw new ArgumentNullException(nameof(rawData)); }
-            Initialize(new Asn1Reader(rawData));
-        }
-
+        
         /// <summary>
         /// Gets the numeric tag value of the current ASN type.
         /// </summary>
@@ -41,7 +32,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// Indicates whether the current structure is container.
         /// </summary>
         /// <remarks>
-        ///		The following primitive types cannot have encapsulated structures:
+        ///		The following primitive types cannot have encapsulated types:
         /// <list type="bullet">
         ///		<item>BOOLEAN</item>
         ///		<item>INTEGER</item>
@@ -82,8 +73,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
                 : AsnFormatter.BinaryToString(RawData, EncodingType.HexRaw, EncodingFormat.NOCRLF);
         }
         /// <summary>
-        /// Encodes current tag to either, Base64 or hex string. For more details and available encoding options
-        /// see <see cref="Crypt32Managed.CryptBinaryToString">CryptBinaryToString</see> managed method.
+        /// Encodes current tag to either, Base64 or hex string.
         /// </summary>
         /// <param name="encoding">Specifies the output encoding.</param>
         /// <returns>Encoded text value.</returns>

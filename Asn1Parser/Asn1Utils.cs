@@ -15,26 +15,6 @@ namespace SysadminsLV.Asn1Parser {
     public static class Asn1Utils {
         #region ASN.1 helper methods
         /// <summary>
-        /// Gets the formatted tag name.
-        /// </summary>
-        /// <param name="tag">Tag numerical value.</param>
-        /// <returns>Formatted tag name</returns>
-        public static String GetTagName(Byte tag) {
-            if ((tag & (Byte)Asn1Class.PRIVATE) != 0) {
-                switch (tag & (Byte)Asn1Class.PRIVATE) {
-                    case (Byte)Asn1Class.CONTEXT_SPECIFIC:
-                        return "CONTEXT_SPECIFIC (" + (tag & 31) + ")";
-                    case (Byte)Asn1Class.APPLICATION:
-                        return "APPLICATION (" + (tag & 31) + ")";
-                    case (Byte)Asn1Class.PRIVATE:
-                        return "PRIVATE (" + (tag & 31) + ")";
-                    case (Byte)Asn1Class.CONSTRUCTED:
-                        return "CONSTRUCTED (" + (tag & 31) + ")";
-                }
-            }
-            return ((Asn1Type)(tag & 31)).ToString();
-        }
-        /// <summary>
         /// Generates tag length header for specified size.
         /// </summary>
         /// <param name="payloadLength">A projected tag length.</param>
