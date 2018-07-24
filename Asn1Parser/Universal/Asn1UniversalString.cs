@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SysadminsLV.Asn1Parser.Universal {
@@ -46,10 +47,10 @@ namespace SysadminsLV.Asn1Parser.Universal {
 
         void m_encode(String inputString) {
             Value = inputString;
-            Initialize(new Asn1Reader(Asn1Utils.Encode(Encoding.UTF32.GetBytes(inputString), TAG)));
+            Initialize(new Asn1Reader(Asn1Utils.Encode(Encoding.UTF32.GetBytes(inputString).Reverse().ToArray(), TAG)));
         }
         void m_decode(Asn1Reader asn) {
-            Value = Encoding.UTF32.GetString(asn.GetPayload());
+            Value = Encoding.UTF32.GetString(asn.GetPayload().Reverse().ToArray());
         }
 
         /// <inheritdoc/>
