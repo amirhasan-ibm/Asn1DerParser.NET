@@ -43,7 +43,7 @@ namespace SysadminsLV.Asn1Parser.Universal {
         ///  </param>
         /// <exception cref="ArgumentNullException"><strong>valueToEncode</strong> parameter is null reference.</exception>
         public Asn1BitString(Byte[] valueToEncode, Boolean calculateUnusedBits) {
-            if (RawData == null) { throw new ArgumentNullException(nameof(valueToEncode)); }
+            if (valueToEncode == null) { throw new ArgumentNullException(nameof(valueToEncode)); }
             m_encode(valueToEncode, calculateUnusedBits);
         }
 
