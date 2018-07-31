@@ -41,31 +41,37 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <exception cref="InvalidDataException">The string is not valid object identifier.</exception>
         /// <exception cref="OverflowException">The string is too large.</exception>
         /// <remarks>Maximum object identifier string is 8kb.</remarks>
-        public Asn1ObjectIdentifier(String oid) {
-            m_encode(oid);
-        }
+        public Asn1ObjectIdentifier(String oid) : this(new Oid(oid)) { }
         /// <summary>
         /// Initializes a new instance of the <strong>Asn1ObjectIdentifier</strong> class from an OID object.
         /// </summary>
         /// <param name="oid">Object identifier (OID).</param>
-        public Asn1ObjectIdentifier(Oid oid) : this(oid.Value) { }
+        /// <exception cref="ArgumentNullException"><strong>oid</strong> parameter is null.</exception>
+        /// <exception cref="InvalidDataException">The string is not valid object identifier.</exception>
+        /// <exception cref="OverflowException">The string is too large.</exception>
+        public Asn1ObjectIdentifier(Oid oid) {
+            if (oid == null) {
+                throw new ArgumentNullException(nameof(oid));
+            }
+            m_encode(oid);
+        }
 
         /// <summary>
         /// Gets value associated with the current object.
         /// </summary>
         public Oid Value { get; private set; }
 
-        void m_encode(String oid) {
-            if (oid == null) {
+        void m_encode(Oid oid) {
+            if (String.IsNullOrWhiteSpace(oid.Value)) {
                 Initialize(new Asn1Reader(new Byte[] { TAG, 0 }));
                 Value = new Oid();
                 return;
             }
-            if (oid.Length > 8096) { throw new OverflowException("Oid string is longer than 8kb"); }
-            if (!validateOidString(oid, out List<UInt64> tokens)) {
+            if (oid.Value.Length > 8096) { throw new OverflowException("Oid string is longer than 8kb"); }
+            if (!validateOidString(oid.Value, out List<UInt64> tokens)) {
                 throw new InvalidDataException(String.Format(InvalidType, TYPE.ToString()));
             }
-            Value = new Oid(oid);
+            Value = oid;
             Initialize(new Asn1Reader(Asn1Utils.Encode(encode(tokens), TAG)));
         }
         void m_decode(Asn1Reader asn) {

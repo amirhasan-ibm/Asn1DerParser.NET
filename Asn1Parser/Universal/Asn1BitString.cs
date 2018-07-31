@@ -33,18 +33,29 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// <strong>rawData</strong> is not <strong>BIT_STRING</strong> data type.
         /// </exception>
         public Asn1BitString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
-        ///  <summary>
-        ///  Initializes a new instance of <strong>Asn1BitString</strong> from a raw byte array to encode and parameter that indicates
-        ///  whether the bit length is decremented to exclude trailing zero bits.
-        ///  </summary>
-        ///  <param name="valueToEncode">Raw value to encode.</param>
-        ///  <param name="calculateUnusedBits">
-        ///  <strong>True</strong> if the bit length is decremented to exclude trailing zero bits. Otherwise <strong>False</strong>.
-        ///  </param>
+        /// <summary>
+        /// Initializes a new instance of <strong>Asn1BitString</strong> from a raw byte array to encode and parameter that indicates
+        /// whether the bit length is decremented to exclude trailing zero bits.
+        /// </summary>
+        /// <param name="valueToEncode">Raw value to encode.</param>
+        /// <param name="calculateUnusedBits">
+        /// <strong>True</strong> if the bit length is decremented to exclude trailing zero bits. Otherwise <strong>False</strong>.
+        /// </param>
         /// <exception cref="ArgumentNullException"><strong>valueToEncode</strong> parameter is null reference.</exception>
         public Asn1BitString(Byte[] valueToEncode, Boolean calculateUnusedBits) {
             if (valueToEncode == null) { throw new ArgumentNullException(nameof(valueToEncode)); }
-            m_encode(valueToEncode, calculateUnusedBits);
+            m_encode(valueToEncode, calculateUnusedBits, 0);
+        }
+        ///  <summary>
+        /// Initializes a new instance of <strong>Asn1BitString</strong> from a raw byte array to encode and a number of unused bits
+        /// in a current bit string.
+        /// </summary>
+        /// <param name="valueToEncode">Raw value to encode.</param>
+        /// <param name="unusedBits">A number of unused bits in bit string.</param>
+        /// <exception cref="ArgumentNullException"><strong>valueToEncode</strong> parameter is null reference.</exception>
+        public Asn1BitString(Byte[] valueToEncode, Byte unusedBits) {
+            if (valueToEncode == null) { throw new ArgumentNullException(nameof(valueToEncode)); }
+            m_encode(valueToEncode, false, unusedBits);
         }
 
         /// <summary>
@@ -56,11 +67,11 @@ namespace SysadminsLV.Asn1Parser.Universal {
         /// </summary>
         public Byte[] Value { get; private set; }
 
-        void m_encode(Byte[] value, Boolean calc) {
+        void m_encode(Byte[] value, Boolean calc, Byte unusedBits) {
             Value = value;
-            UnusedBits = (Byte)(calc
+            UnusedBits = calc
                 ? CalculateUnusedBits(value)
-                : 0);
+                : unusedBits;
             Byte[] v = new Byte[value.Length + 1];
             v[0] = UnusedBits;
             value.CopyTo(v, 1);

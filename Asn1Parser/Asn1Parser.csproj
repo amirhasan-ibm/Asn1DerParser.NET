@@ -60,6 +60,7 @@
     <Compile Include="Universal\Asn1BmpString.cs" />
     <Compile Include="Universal\Asn1Boolean.cs" />
     <Compile Include="Universal\Asn1DateTime.cs" />
+    <Compile Include="Universal\Asn1Enumerated.cs" />
     <Compile Include="Universal\Asn1GeneralizedTime.cs" />
     <Compile Include="Universal\Asn1IA5String.cs" />
     <Compile Include="Universal\Asn1Integer.cs" />

@@ -24,19 +24,32 @@ namespace SysadminsLV.Asn1Parser.Universal {
             if (asn.Tag != TAG) {
                 throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
             }
-            m_decode(asn);
+            Value = asn.GetPayload();
         }
         /// <summary>
         /// Initializes a new instance of <strong>Asn1NumericString</strong> from a ASN.1-encoded byte array.
         /// </summary>
         /// <param name="rawData">ASN.1-encoded byte array.</param>
+        /// <param name="tagged">Boolean value that indicates whether the byte array in <strong>rawData</strong> parameter is encoded or not.</param>
         /// <exception cref="Asn1InvalidTagException">
         /// <strong>rawData</strong> is not <strong>NumericString</strong> data type.
         /// </exception>
         /// <exception cref="InvalidDataException">
         /// Input data contains invalid NumericString character.
         /// </exception>
-        public Asn1OctetString(Byte[] rawData) : this(new Asn1Reader(rawData)) { }
+        public Asn1OctetString(Byte[] rawData, Boolean tagged) {
+            if (tagged) {
+                var asn = new Asn1Reader(rawData);
+                if (asn.Tag != TAG) {
+                    throw new Asn1InvalidTagException(String.Format(InvalidType, TYPE.ToString()));
+                }
+                Value = asn.GetPayload();
+                Initialize(asn);
+            } else {
+                Value = rawData;
+                Initialize(new Asn1Reader(Asn1Utils.Encode(rawData, TAG)));
+            }
+        }
 
         /// <summary>
         /// Gets value associated with the current object.
